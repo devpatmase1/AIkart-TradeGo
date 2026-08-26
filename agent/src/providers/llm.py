@@ -1345,7 +1345,7 @@ def build_llm(*, model_name: Optional[str] = None, callbacks: Any = None) -> Any
     name = model_name or get_env_config().llm.langchain_model_name.strip()
     if not name or (provider == "gemini" and "deepseek" in name):
         defaults = {
-            "gemini": "gemini-2.0-flash",
+            "gemini": "gemini-1.5-flash",
             "openai": "gpt-4o-mini",
             "deepseek": "deepseek-chat",
             "anthropic": "claude-3-5-sonnet-20241022",
@@ -1354,7 +1354,7 @@ def build_llm(*, model_name: Optional[str] = None, callbacks: Any = None) -> Any
             "qwen": "qwen-max",
             "dashscope": "qwen-max",
         }
-        name = defaults.get(provider, "gemini-2.0-flash")
+        name = defaults.get(provider, "gemini-1.5-flash")
     temperature = get_env_config().llm.langchain_temperature
     creds = get_llm_credentials(provider, name)
     provider = creds["provider"] or provider
