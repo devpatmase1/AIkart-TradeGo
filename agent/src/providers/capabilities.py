@@ -399,6 +399,16 @@ def get_llm_credentials(
         if base_url and not base_url.endswith("/v1"):
             base_url = f"{base_url}/v1"
 
+    if api_key and api_key.startswith(("AQ.", "AIza")):
+        gemini_base = os.getenv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta/openai/")
+        effective_model = model if (model and "gemini" in model.lower()) else "gemini-2.5-flash"
+        return {
+            "provider": "gemini",
+            "api_key": api_key,
+            "base_url": gemini_base,
+            "model": effective_model,
+        }
+
     return {
         "provider": (provider or "").strip().lower(),
         "api_key": api_key,

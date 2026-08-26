@@ -1356,7 +1356,9 @@ def build_llm(*, model_name: Optional[str] = None, callbacks: Any = None) -> Any
         }
         name = defaults.get(provider, "gemini-2.5-flash")
     temperature = get_env_config().llm.langchain_temperature
-    provider = get_env_config().llm.langchain_provider.lower()
+    creds = get_llm_credentials(provider, name)
+    provider = creds["provider"] or provider
+    name = creds["model"] or name
     caps = get_provider_capabilities(provider, name)
     if provider in {"openai-codex", "openai_codex"}:
         from src.providers.openai_codex import OpenAICodexLLM
