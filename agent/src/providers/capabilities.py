@@ -401,7 +401,7 @@ def get_llm_credentials(
 
     if api_key and api_key.startswith(("AQ.", "AIza")):
         gemini_base = os.getenv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta/openai/")
-        effective_model = model if (model and "gemini" in model.lower()) else "gemini-2.5-flash"
+        effective_model = model if (model and "gemini" in model.lower() and "gemini-2.5" not in model.lower()) else "gemini-2.0-flash"
         return {
             "provider": "gemini",
             "api_key": api_key,
