@@ -1339,8 +1339,19 @@ def build_llm(*, model_name: Optional[str] = None, callbacks: Any = None) -> Any
     """
     _sync_provider_env()
     name = model_name or get_env_config().llm.langchain_model_name.strip()
+    provider = get_env_config().llm.langchain_provider.lower()
     if not name:
-        raise RuntimeError("LANGCHAIN_MODEL_NAME is not set")
+        defaults = {
+            "gemini": "gemini-2.5-flash",
+            "openai": "gpt-4o-mini",
+            "deepseek": "deepseek-chat",
+            "anthropic": "claude-3-5-sonnet-20241022",
+            "openrouter": "deepseek/deepseek-v4-pro",
+            "groq": "llama-3.3-70b-versatile",
+            "qwen": "qwen-max",
+            "dashscope": "qwen-max",
+        }
+        name = defaults.get(provider, "gemini-2.5-flash")
     temperature = get_env_config().llm.langchain_temperature
     provider = get_env_config().llm.langchain_provider.lower()
     caps = get_provider_capabilities(provider, name)

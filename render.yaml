@@ -11,3 +11,7 @@ services:
         value: "1"
       - key: ALLOW_UNAUTHENTICATED_REMOTE
         value: "true"
+      - key: LANGCHAIN_PROVIDER
+        value: "gemini"
+      - key: LANGCHAIN_MODEL_NAME
+        value: "gemini-2.5-flash"
