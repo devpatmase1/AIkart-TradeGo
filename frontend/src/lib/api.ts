@@ -32,7 +32,7 @@ i18n.on("languageChanged", () => {
 });
 
 export function isAuthRequiredError(error: unknown): boolean {
-  return error instanceof ApiError && (error.status === 401 || error.status === 403);
+  return error instanceof ApiError && (error.status === 401 || error.status === 403) && error.message.includes("API_AUTH_KEY");
 }
 
 export interface CorrelationResponse {

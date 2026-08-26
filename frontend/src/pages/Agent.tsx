@@ -1375,7 +1375,9 @@ export function Agent() {
     } catch (error) {
       archiveActivity("failed");
       act().setStatus("error");
-      const message = isAuthRequiredError(error) ? AUTH_REQUIRED_MESSAGE : t('agent.failedToSend');
+      const message = isAuthRequiredError(error)
+        ? AUTH_REQUIRED_MESSAGE
+        : (error instanceof Error && error.message ? error.message : t('agent.failedToSend'));
       toast.error(message);
       act().addMessage({ id: "", type: "error", content: message, timestamp: Date.now() });
     }
