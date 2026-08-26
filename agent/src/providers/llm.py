@@ -1338,9 +1338,12 @@ def build_llm(*, model_name: Optional[str] = None, callbacks: Any = None) -> Any
         RuntimeError: If langchain-openai is missing or LANGCHAIN_MODEL_NAME is unset.
     """
     _sync_provider_env()
-    name = model_name or get_env_config().llm.langchain_model_name.strip()
     provider = get_env_config().llm.langchain_provider.lower()
-    if not name:
+    if os.getenv("GEMINI_API_KEY") and provider in {"openrouter", "openai"} and not os.getenv("OPENROUTER_API_KEY") and not os.getenv("OPENAI_API_KEY"):
+        provider = "gemini"
+
+    name = model_name or get_env_config().llm.langchain_model_name.strip()
+    if not name or (provider == "gemini" and "deepseek" in name):
         defaults = {
             "gemini": "gemini-2.5-flash",
             "openai": "gpt-4o-mini",
