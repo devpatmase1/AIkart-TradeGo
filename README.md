@@ -6,10 +6,10 @@
   <img src="assets/icon.png" width="120" alt="Vibe-Trading Logo"/>
 </p>
 
-<h1 align="center">Vibe-Trading: Your Personal Trading Agent</h1>
+<h1 align="center">aiKart TradeGo: Autonomous AI Trading Agent</h1>
 
 <p align="center">
-  <b>One Command to Empower Your Agent with Comprehensive Trading Capabilities</b>
+  <b>Powered by aiKart &mdash; Empowering Intelligent Autonomous Trading & Quantitative Analytics</b>
 </p>
 
 <p align="center">
