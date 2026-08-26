@@ -1043,6 +1043,35 @@ def _build_anthropic(
     )
 
 
+def _build_native_gemini(
+    *,
+    model: str,
+    temperature: float,
+    callbacks: Any = None,
+) -> Any:
+    """Build native ChatGoogleGenerativeAI model for Gemini."""
+    try:
+        from langchain_google_genai import ChatGoogleGenerativeAI
+    except ImportError:
+        return None
+
+    api_key = (
+        os.getenv("GEMINI_API_KEY")
+        or os.getenv("GOOGLE_API_KEY")
+        or os.getenv("OPENAI_API_KEY", "")
+    )
+    if not api_key:
+        return None
+
+    cleaned_model = model if (model and model.startswith("gemini-")) else "gemini-1.5-flash"
+    return ChatGoogleGenerativeAI(
+        model=cleaned_model,
+        google_api_key=api_key,
+        temperature=temperature,
+        callbacks=callbacks,
+    )
+
+
 def _load_env_file(path: Path) -> None:
     """Load a single .env file into os.environ (setdefault, no override)."""
     if load_dotenv is not None:
@@ -1387,20 +1416,14 @@ def build_llm(*, model_name: Optional[str] = None, callbacks: Any = None) -> Any
             effort=get_env_config().llm.langchain_reasoning_effort.strip().lower(),
         )
 
-    if provider == "deepseek":
-        adapter_mode = _deepseek_adapter_mode()
-        if adapter_mode != "openai-compatible":
-            native_llm = _build_native_deepseek(
-                model=name,
-                temperature=temperature,
-                callbacks=callbacks,
-            )
-            if native_llm is not None:
-                return native_llm
-            if adapter_mode == "native":
-                raise RuntimeError(
-                    "VIBE_TRADING_DEEPSEEK_ADAPTER=native requires langchain-deepseek"
-                )
+    if provider == "gemini":
+        native_gemini = _build_native_gemini(
+            model=name,
+            temperature=temperature,
+            callbacks=callbacks,
+        )
+        if native_gemini is not None:
+            return native_gemini
 
     if ChatOpenAI is None:
         raise RuntimeError("langchain-openai is not installed")

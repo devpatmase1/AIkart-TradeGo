@@ -5,6 +5,7 @@ pyyaml>=6.0.0
 langchain>=1.3.9,<2
 langchain-core>=1.0.0,<2
 langchain-openai>=1.0.0,<2
+langchain-google-genai
 # optional: pip install "vibe-trading-ai[deepseek]" — native DeepSeek adapter (langchain-deepseek)
 # optional: pip install "vibe-trading-ai[anthropic]" — native Anthropic Messages API adapter (langchain-anthropic)
 langgraph>=1.2.5,<1.3
