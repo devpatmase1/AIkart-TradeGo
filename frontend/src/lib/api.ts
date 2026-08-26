@@ -70,7 +70,7 @@ async function errorFromResponse(res: Response): Promise<ApiError> {
     // ({status:"error", error} / {ok:false, error}) rather than detail/message.
     detail = body.detail || body.message || body.error || detail;
   } catch { /* ignore */ }
-  if (res.status === 401 || res.status === 403) {
+  if ((res.status === 401 || res.status === 403) && (!detail || detail.startsWith("HTTP "))) {
     detail = getAuthRequiredMessage();
   }
   return new ApiError(detail, res.status);
