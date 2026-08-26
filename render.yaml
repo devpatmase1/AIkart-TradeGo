@@ -9,5 +9,5 @@ services:
     envVars:
       - key: PYTHONUNBUFFERED
         value: "1"
-      - key: API_AUTH_KEY
-        generateValue: true
+      - key: ALLOW_UNAUTHENTICATED_REMOTE
+        value: "true"

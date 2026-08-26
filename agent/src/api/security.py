@@ -505,7 +505,10 @@ def _validate_api_auth(
 
 
 def _is_local_client(request: Request) -> bool:
-    """Return whether the request originates from a loopback client."""
+    """Return whether the request originates from a loopback client or unauthenticated remote mode."""
+    import os
+    if os.getenv("ALLOW_UNAUTHENTICATED_REMOTE", "").lower() in ("1", "true", "yes"):
+        return True
     host = request.client.host if request.client else ""
     if host in {"localhost", "testclient"}:
         return True
