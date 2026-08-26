@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: vibe-trading
+    env: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: singapore
+    autoDeploy: true
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: API_AUTH_KEY
+        generateValue: true

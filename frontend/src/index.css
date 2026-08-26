@@ -1,0 +1,186 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Light mode surfaces - Pure White & Crisp Light Slate (aiKart.co style) */
+    --background: 0 0% 96%;           /* #f4f4f4 pure aikart page background */
+    --foreground: 222 47% 11%;        /* #0f172a high-contrast slate text */
+    --card: 0 0% 100%;                /* #ffffff pure white card containers */
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;             /* #ffffff pure white popovers */
+    --popover-foreground: 222 47% 11%;
+
+    /* Brand accent - Electric Royal Blue (aiKart.co aesthetic) */
+    --primary: 221 100% 50%;          /* #0050FF / #2563eb */
+    --primary-foreground: 0 0% 100%;
+
+    --muted: 210 40% 96%;             /* #f1f5f9 light slate */
+    --muted-foreground: 215 20% 38%;   /* #475569 readable slate muted */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;            /* #e2e8f0 crisp light border */
+    --radius: 0.85rem;
+
+    /* Semantic colors */
+    --success: 142 71% 45%;
+    --danger: 0 84% 60%;
+    --warning: 38 92% 50%;
+    --info: 217 91% 60%;
+
+    /* Chart tokens */
+    --chart-grid: 220 14% 90%;
+    --chart-text: 215 20% 38%;
+    --chart-axis: 220 14% 80%;
+    --chart-compare-a: #2563eb;
+    --chart-compare-b: #ffae00;
+  }
+
+  .dark {
+    /* Dark mode: sleek deep navy surface system matching aiKart.co */
+    --background: 222 47% 7%;        /* bg-base */
+    --foreground: 220 10% 93%;
+    --card: 222 35% 10%;             /* surface-1 */
+    --card-foreground: 220 10% 93%;
+
+    --popover: 222 35% 12%;          /* surface-1.5 */
+    --popover-foreground: 220 10% 93%;
+
+    --primary: 221 100% 60%;         /* Bright Royal Blue */
+    --primary-foreground: 0 0% 100%;
+
+    --muted: 222 30% 15%;            /* surface-2 */
+    --muted-foreground: 220 10% 64%;
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 222 25% 20%;           /* surface-3 */
+
+    /* Semantic colors */
+    --success: 142 71% 45%;
+    --danger: 0 62% 50%;
+    --warning: 38 92% 50%;
+    --info: 217 91% 60%;
+
+    /* Chart tokens */
+    --chart-grid: 222 20% 15%;
+    --chart-text: 220 10% 55%;
+    --chart-axis: 222 20% 26%;
+    --chart-compare-a: #60a5fa;
+    --chart-compare-b: #ffae00;
+  }
+
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground; }
+
+  /* aiKart.co Shimmering Animated Text Gradient */
+  @keyframes hm-gradientShift {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
+  .hm-grad,
+  .animated-gradient {
+    display: inline-block;
+    background: linear-gradient(90deg, #0050FF 0%, #7F7595 25%, #FFAE00 50%, #7F7595 75%, #0050FF 100%);
+    background-size: 200% 100%;
+    background-position: 0% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+    animation: hm-gradientShift 6s linear infinite;
+  }
+
+  /* aiKart Glassmorphism utility classes */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  }
+
+  .dark .glass-card {
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .glass-nav {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(226, 232, 240, 0.9);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  }
+
+  .dark .glass-nav {
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.35);
+  }
+
+  .glass-pill {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(226, 232, 240, 0.9);
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+  }
+
+  .dark .glass-pill {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1.5px solid rgba(255, 255, 255, 0.18);
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+  }
+
+  /* Prose table enhancements */
+  .prose table { border-collapse: collapse; width: 100%; }
+  .prose th, .prose td { border: 1px solid hsl(var(--border)); }
+  .prose tbody tr:nth-child(even) { background: hsl(var(--muted) / 0.3); }
+
+  /* Smooth scrollbar for webkit */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--border)); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+}
+
+/* Streaming pulse-slide animation for the "running" bar */
+@keyframes pulse-slide {
+  0%   { transform: translateX(-100%); }
+  50%  { transform: translateX(200%); }
+  100% { transform: translateX(-100%); }
+}
+
+.chat-scroll-container[data-streaming="true"] {
+  overflow-anchor: none;
+}
+
+.katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Message/hero entrance — one subtle rise per mount; removed under reduced motion */
+@keyframes msg-enter {
+  from { opacity: 0; transform: translateY(10px); }
+}
+.msg-enter { animation: msg-enter 300ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .msg-enter { animation: none; }
+}
+
+/* RTL: mirror directional icons (chevrons, arrows) automatically */
+[dir="rtl"] .rtl\:flip-x { transform: scaleX(-1); }
