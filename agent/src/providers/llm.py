@@ -1063,7 +1063,7 @@ def _build_native_gemini(
     if not api_key:
         return None
 
-    cleaned_model = model if (model and model.startswith("gemini-")) else "gemini-1.5-flash"
+    cleaned_model = model if (model and model.startswith("gemini-") and "1.5" not in model and "2.0" not in model and "2.5" not in model) else "gemini-3.6-flash"
     return ChatGoogleGenerativeAI(
         model=cleaned_model,
         google_api_key=api_key,
@@ -1374,7 +1374,7 @@ def build_llm(*, model_name: Optional[str] = None, callbacks: Any = None) -> Any
     name = model_name or get_env_config().llm.langchain_model_name.strip()
     if not name or (provider == "gemini" and "deepseek" in name):
         defaults = {
-            "gemini": "gemini-1.5-flash",
+            "gemini": "gemini-3.6-flash",
             "openai": "gpt-4o-mini",
             "deepseek": "deepseek-chat",
             "anthropic": "claude-3-5-sonnet-20241022",
@@ -1383,7 +1383,7 @@ def build_llm(*, model_name: Optional[str] = None, callbacks: Any = None) -> Any
             "qwen": "qwen-max",
             "dashscope": "qwen-max",
         }
-        name = defaults.get(provider, "gemini-1.5-flash")
+        name = defaults.get(provider, "gemini-3.6-flash")
     temperature = get_env_config().llm.langchain_temperature
     creds = get_llm_credentials(provider, name)
     provider = creds["provider"] or provider

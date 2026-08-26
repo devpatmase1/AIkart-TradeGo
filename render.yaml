@@ -15,4 +15,4 @@ services:
       - key: LANGCHAIN_PROVIDER
         value: "gemini"
       - key: LANGCHAIN_MODEL_NAME
-        value: "gemini-1.5-flash"
+        value: "gemini-3.6-flash"
