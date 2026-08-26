@@ -1,8 +1,9 @@
 services:
   - type: web
     name: vibe-trading
-    env: docker
-    dockerfilePath: ./Dockerfile
+    env: python
+    buildCommand: "pip install -r agent/requirements.txt && cd frontend && npm install && npm run build"
+    startCommand: "python agent/api_server.py --host 0.0.0.0"
     plan: free
     region: singapore
     autoDeploy: true
