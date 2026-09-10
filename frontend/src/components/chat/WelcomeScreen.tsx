@@ -1,360 +1,146 @@
-import { useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { ChevronDown, TrendingUp, Globe, Sparkles, Users, UserCircle2, NotebookPen, Landmark, Gem } from "lucide-react";
+import { useState } from "react";
+import { TradeGoHeader } from "@/components/tradego/TradeGoHeader";
+import { TradeGoStockChart } from "@/components/tradego/TradeGoStockChart";
+import { TradeGoSwarmTimeline } from "@/components/tradego/TradeGoSwarmTimeline";
+import { TradeGoLiveSignals } from "@/components/tradego/TradeGoLiveSignals";
+import { TradeGoComposer } from "@/components/chat/TradeGoComposer";
+import { Activity, Flame, Sparkles, Users, Newspaper } from "lucide-react";
 
-interface Example {
-  titleKey: string;
-  descKey: string;
-  promptKey: string;
+interface WelcomeScreenProps {
+  onExample: (prompt: string) => void;
 }
 
-interface Category {
-  labelKey: string;
-  icon: React.ReactNode;
-  examples: Example[];
-}
-
-const CATEGORIES: Category[] = [
-  {
-    labelKey: "welcome.categories.multiMarketBacktest",
-    icon: <TrendingUp className="h-4 w-4" />,
-    examples: [
-      {
-        titleKey: "welcome.examples.crossMarketPortfolio",
-        descKey: "welcome.examples.crossMarketPortfolioDesc",
-        promptKey: "welcome.examples.crossMarketPortfolioPrompt",
-      },
-      {
-        titleKey: "welcome.examples.btcMacd",
-        descKey: "welcome.examples.btcMacdDesc",
-        promptKey: "welcome.examples.btcMacdPrompt",
-      },
-      {
-        titleKey: "welcome.examples.usTechMaxDiv",
-        descKey: "welcome.examples.usTechMaxDivDesc",
-        promptKey: "welcome.examples.usTechMaxDivPrompt",
-      },
-    ],
-  },
-  {
-    labelKey: "welcome.categories.researchAnalysis",
-    icon: <Sparkles className="h-4 w-4" />,
-    examples: [
-      {
-        titleKey: "welcome.examples.multiFactorAlpha",
-        descKey: "welcome.examples.multiFactorAlphaDesc",
-        promptKey: "welcome.examples.multiFactorAlphaPrompt",
-      },
-      {
-        titleKey: "welcome.examples.optionsGreeks",
-        descKey: "welcome.examples.optionsGreeksDesc",
-        promptKey: "welcome.examples.optionsGreeksPrompt",
-      },
-    ],
-  },
-  {
-    labelKey: "welcome.categories.valueInvesting",
-    icon: <Gem className="h-4 w-4" />,
-    examples: [
-      {
-        titleKey: "welcome.examples.valueCommittee",
-        descKey: "welcome.examples.valueCommitteeDesc",
-        promptKey: "welcome.examples.valueCommitteePrompt",
-      },
-      {
-        titleKey: "welcome.examples.bottleneckHunter",
-        descKey: "welcome.examples.bottleneckHunterDesc",
-        promptKey: "welcome.examples.bottleneckHunterPrompt",
-      },
-      {
-        titleKey: "welcome.examples.thesisTracker",
-        descKey: "welcome.examples.thesisTrackerDesc",
-        promptKey: "welcome.examples.thesisTrackerPrompt",
-      },
-      {
-        titleKey: "welcome.examples.valuationCheck",
-        descKey: "welcome.examples.valuationCheckDesc",
-        promptKey: "welcome.examples.valuationCheckPrompt",
-      },
-    ],
-  },
-  {
-    labelKey: "welcome.categories.swarmTeams",
-    icon: <Users className="h-4 w-4" />,
-    examples: [
-      {
-        titleKey: "welcome.examples.investmentCommittee",
-        descKey: "welcome.examples.investmentCommitteeDesc",
-        promptKey: "welcome.examples.investmentCommitteePrompt",
-      },
-      {
-        titleKey: "welcome.examples.quantStrategyDesk",
-        descKey: "welcome.examples.quantStrategyDeskDesc",
-        promptKey: "welcome.examples.quantStrategyDeskPrompt",
-      },
-    ],
-  },
-  {
-    labelKey: "welcome.categories.docWebResearch",
-    icon: <Globe className="h-4 w-4" />,
-    examples: [
-      {
-        titleKey: "welcome.examples.earningsReport",
-        descKey: "welcome.examples.earningsReportDesc",
-        promptKey: "welcome.examples.earningsReportPrompt",
-      },
-      {
-        titleKey: "welcome.examples.macroResearch",
-        descKey: "welcome.examples.macroResearchDesc",
-        promptKey: "welcome.examples.macroResearchPrompt",
-      },
-    ],
-  },
-  {
-    labelKey: "welcome.categories.tradeJournal",
-    icon: <NotebookPen className="h-4 w-4" />,
-    examples: [
-      {
-        titleKey: "welcome.examples.analyzeBrokerExport",
-        descKey: "welcome.examples.analyzeBrokerExportDesc",
-        promptKey: "welcome.examples.analyzeBrokerExportPrompt",
-      },
-      {
-        titleKey: "welcome.examples.diagnoseBehavior",
-        descKey: "welcome.examples.diagnoseBehaviorDesc",
-        promptKey: "welcome.examples.diagnoseBehaviorPrompt",
-      },
-    ],
-  },
-  {
-    labelKey: "welcome.categories.tradingConnectors",
-    icon: <Landmark className="h-4 w-4" />,
-    examples: [
-      {
-        titleKey: "welcome.examples.checkConnector",
-        descKey: "welcome.examples.checkConnectorDesc",
-        promptKey: "welcome.examples.checkConnectorPrompt",
-      },
-      {
-        titleKey: "welcome.examples.analyzePortfolio",
-        descKey: "welcome.examples.analyzePortfolioDesc",
-        promptKey: "welcome.examples.analyzePortfolioPrompt",
-      },
-      {
-        titleKey: "welcome.examples.quoteTrend",
-        descKey: "welcome.examples.quoteTrendDesc",
-        promptKey: "welcome.examples.quoteTrendPrompt",
-      },
-    ],
-  },
-  {
-    labelKey: "welcome.categories.shadowAccount",
-    icon: <UserCircle2 className="h-4 w-4" />,
-    examples: [
-      {
-        titleKey: "welcome.examples.trainShadow",
-        descKey: "welcome.examples.trainShadowDesc",
-        promptKey: "welcome.examples.trainShadowPrompt",
-      },
-      {
-        titleKey: "welcome.examples.shadowDelta",
-        descKey: "welcome.examples.shadowDeltaDesc",
-        promptKey: "welcome.examples.shadowDeltaPrompt",
-      },
-      {
-        titleKey: "welcome.examples.shadowReport",
-        descKey: "welcome.examples.shadowReportDesc",
-        promptKey: "welcome.examples.shadowReportPrompt",
-      },
-    ],
-  },
-];
-
-const GREETING_KEYS = {
-  morning: [
-    "welcome.greetings.morning1",
-    "welcome.greetings.morning2",
-    "welcome.greetings.morning3",
-  ],
-  afternoon: [
-    "welcome.greetings.afternoon1",
-    "welcome.greetings.afternoon2",
-    "welcome.greetings.afternoon3",
-  ],
-  evening: [
-    "welcome.greetings.evening1",
-    "welcome.greetings.evening2",
-    "welcome.greetings.evening3",
-  ],
-  night: [
-    "welcome.greetings.night1",
-    "welcome.greetings.night2",
-    "welcome.greetings.night3",
-  ],
-} as const;
-
-const QUICK_ACTIONS = [
-  {
-    titleKey: "welcome.examples.valuationCheck",
-    promptKey: "welcome.examples.valuationCheckPrompt",
-    icon: <Gem className="h-4 w-4" aria-hidden="true" />,
-  },
-  {
-    titleKey: "welcome.examples.optionsGreeks",
-    promptKey: "welcome.examples.optionsGreeksPrompt",
-    icon: <Sparkles className="h-4 w-4" aria-hidden="true" />,
-  },
-  {
-    titleKey: "welcome.examples.crossMarketPortfolio",
-    promptKey: "welcome.examples.crossMarketPortfolioPrompt",
-    icon: <TrendingUp className="h-4 w-4" aria-hidden="true" />,
-  },
-  {
-    titleKey: "welcome.examples.investmentCommittee",
-    promptKey: "welcome.examples.investmentCommitteePrompt",
-    icon: <Users className="h-4 w-4" aria-hidden="true" />,
-  },
-] as const;
-
-function pickGreetingKey(): string {
-  const hour = new Date().getHours();
-  const bucket =
-    hour >= 5 && hour < 12
-      ? "morning"
-      : hour >= 12 && hour < 17
-        ? "afternoon"
-        : hour >= 17 && hour < 22
-          ? "evening"
-          : "night";
-  const variants = GREETING_KEYS[bucket];
-  return variants[Math.floor(Math.random() * variants.length)] ?? variants[0];
-}
-
-interface Props {
-  onExample: (s: string) => void;
-}
-
-export function WelcomeScreen({ onExample }: Props) {
-  const { t } = useTranslation();
-  const [greetingKey] = useState(() => pickGreetingKey());
-  const [isExamplesOpen, setIsExamplesOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState(0);
-  const examplesTriggerRef = useRef<HTMLButtonElement>(null);
+export function WelcomeScreen({ onExample }: WelcomeScreenProps) {
+  const [selectedSymbol, setSelectedSymbol] = useState("NVDA");
 
   return (
-    <div className="flex w-full flex-col items-center px-4 pb-14 text-center">
-      <div className="w-full max-w-3xl">
-        <div className="mx-auto max-w-2xl">
-          <div className="flex items-center justify-center gap-3">
-            <h1 className="text-[36px] font-extrabold leading-tight sm:text-[46px] animated-gradient tracking-tight">
-              {t(greetingKey as any)}
-            </h1>
-          </div>
-          <p className="mt-3 text-base text-muted-foreground font-medium max-w-xl mx-auto">
-            {t("welcome.taskSubtitle" as any)}
-          </p>
-        </div>
+    <div className="w-full max-w-[1240px] mx-auto space-y-6 pb-12 overflow-x-hidden">
+      {/* 1. Header & Live Market Ticker */}
+      <TradeGoHeader
+        activeSymbol={selectedSymbol}
+        onSymbolSelect={setSelectedSymbol}
+        onQuickAnalysis={onExample}
+      />
 
-        <div
-          className="mt-8 flex flex-wrap justify-center gap-2.5"
-          role="group"
-          aria-label={t("welcome.quickActions" as any)}
-        >
-          {QUICK_ACTIONS.map((action, index) => (
-            <button
-              key={action.titleKey}
-              type="button"
-              onClick={() => onExample(t(action.promptKey as any))}
-              className={
-                index === 0
-                  ? "inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-5 py-2.5 text-sm font-semibold text-primary shadow-md shadow-primary/15 transition-all duration-200 hover:scale-[1.03] hover:bg-primary/20 hover:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
-                  : "inline-flex items-center gap-2 rounded-full border border-border/70 bg-card/70 backdrop-blur-md px-5 py-2.5 text-sm font-medium transition-all duration-200 hover:scale-[1.03] hover:border-primary/50 hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 shadow-sm"
-              }
-            >
-              {action.icon}
-              <span>{t(action.titleKey as any)}</span>
-            </button>
-          ))}
-        </div>
-
-        <button
-          ref={examplesTriggerRef}
-          type="button"
-          aria-expanded={isExamplesOpen}
-          aria-controls="welcome-example-library"
-          onClick={() => setIsExamplesOpen((open) => !open)}
-          className="mt-10 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-        >
-          <span>{t("welcome.browseAllExamples" as any)}</span>
-          <ChevronDown
-            className={`h-4 w-4 transition-transform duration-300 ${isExamplesOpen ? "rotate-180" : ""}`}
-            aria-hidden="true"
+      {/* 2-Column Responsive Grid Layout (Desktop: 7 cols left, 5 cols right) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        {/* LEFT COLUMN: Interactive ECharts Chart, Swarm Workflow & Prompt Input */}
+        <div className="lg:col-span-7 space-y-6">
+          {/* Real-Time Stock Chart */}
+          <TradeGoStockChart
+            symbol={selectedSymbol}
+            onAnalyzeSymbol={(sym) => onExample(`Perform institutional-grade deep technical & fundamental audit for $${sym}`)}
           />
-        </button>
 
-        <div
-          id="welcome-example-library"
-          aria-hidden={!isExamplesOpen}
-          onKeyDown={(event) => {
-            if (event.key !== "Escape" || !isExamplesOpen) return;
-            event.preventDefault();
-            event.stopPropagation();
-            setIsExamplesOpen(false);
-            examplesTriggerRef.current?.focus();
-          }}
-          className={`grid text-left transition-[grid-template-rows,opacity] duration-300 ease-out ${
-            isExamplesOpen
-              ? "grid-rows-[1fr] opacity-100"
-              : "grid-rows-[0fr] opacity-0"
-          }`}
-        >
-          <div className="min-h-0 overflow-hidden">
-            <div className="pt-6">
-              <div
-                className="flex flex-wrap justify-center gap-2"
-                role="tablist"
-                aria-label={t("welcome.browseAllExamples" as any)}
-              >
-                {CATEGORIES.map((cat, index) => (
-                  <button
-                    key={cat.labelKey}
-                    type="button"
-                    role="tab"
-                    aria-selected={index === activeCategory}
-                    tabIndex={isExamplesOpen ? 0 : -1}
-                    onClick={() => setActiveCategory(index)}
-                    className={
-                      index === activeCategory
-                        ? "inline-flex items-center gap-1.5 rounded-full border border-primary/50 bg-primary text-primary-foreground px-4 py-2 text-xs font-semibold shadow-md shadow-primary/20 transition-all"
-                        : "inline-flex items-center gap-1.5 rounded-full border border-border/50 bg-card/60 backdrop-blur-md px-4 py-2 text-xs text-muted-foreground transition-all hover:border-primary/40 hover:text-foreground"
-                    }
-                  >
-                    {cat.icon}
-                    <span>{t(cat.labelKey as any)}</span>
-                  </button>
-                ))}
+          {/* Quick Prompt Composer Input */}
+          <div className="aikart-card space-y-3 bg-white">
+            <div className="flex items-center justify-between pb-2 border-b border-[#f1f5f9]">
+              <span className="text-xs font-bold text-[#0f172a] font-['Red_Hat_Display'] flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-blue-600" />
+                Ask TradeGo AI Agent
+              </span>
+              <span className="text-[11px] text-[#94a3b8] font-['Inter']">
+                Real-time stock queries & signals
+              </span>
+            </div>
+
+            <TradeGoComposer
+              activeSymbol={selectedSymbol}
+              onSend={onExample}
+            />
+          </div>
+
+          {/* Swarm Agent Execution Steps */}
+          <TradeGoSwarmTimeline symbol={selectedSymbol} />
+        </div>
+
+        {/* RIGHT COLUMN: Live Trading Signals, Sentiment Meter & Simulated Orders */}
+        <div className="lg:col-span-5 space-y-6">
+          {/* Live Signals & Paper Trading Modal */}
+          <TradeGoLiveSignals
+            symbol={selectedSymbol}
+            onExecuteSimulatedTrade={(order) => {
+              onExample(`Execute paper trading simulation for ${order.quantity} shares of ${order.symbol} at ${order.price}`);
+            }}
+          />
+
+          {/* Market Sentiment & Catalyst Heatmap */}
+          <div className="aikart-card space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#f1f5f9]">
+              <div className="flex items-center gap-2">
+                <Flame className="w-4 h-4 text-amber-500" />
+                <h4 className="text-sm font-bold font-['Red_Hat_Display'] text-[#0f172a]">
+                  Market Sentiment & Catalysts
+                </h4>
               </div>
-              <div role="tabpanel" className="mt-5 grid gap-3 text-left sm:grid-cols-2">
-                {CATEGORIES[activeCategory].examples.map((ex) => (
-                  <button
-                    key={ex.titleKey}
-                    type="button"
-                    tabIndex={isExamplesOpen ? 0 : -1}
-                    onClick={() => onExample(t(ex.promptKey as any))}
-                    className="block w-full rounded-2xl glass-card px-4 py-3.5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/50 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
-                  >
-                    <span className="text-sm font-semibold leading-snug text-foreground">
-                      {t(ex.titleKey as any)}
-                    </span>
-                    <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
-                      {t(ex.descKey as any)}
-                    </span>
-                  </button>
-                ))}
+              <span className="text-xs font-bold text-[#047857] bg-[#ecfdf5] px-2 py-0.5 rounded-full font-['Inter']">
+                78% Bullish
+              </span>
+            </div>
+
+            {/* Fear & Greed Gauge Bar */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs font-['Inter']">
+                <span className="text-[#475569]">Fear & Greed Index</span>
+                <span className="font-bold text-amber-600">68 (Greed)</span>
+              </div>
+              <div className="w-full h-2 rounded-full bg-gray-100 overflow-hidden flex">
+                <div className="w-[68%] h-full bg-gradient-to-r from-amber-400 to-emerald-500 rounded-full" />
+              </div>
+            </div>
+
+            {/* Catalyst Feed */}
+            <div className="space-y-2 text-xs font-['Poppins']">
+              <div className="p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex items-start gap-2">
+                <Newspaper className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold text-[#0f172a] block">Fed Rate Cut Expectations Rise</span>
+                  <span className="text-[#475569]">Fed futures price 85% probability of 25bps cut next FOMC.</span>
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-[#f8fafc] border border-[#e2e8f0] flex items-start gap-2">
+                <Activity className="w-4 h-4 text-indigo-600 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold text-[#0f172a] block">AI Infrastructure Surge</span>
+                  <span className="text-[#475569]">Hyperscaler capex projections revised upward by +14%.</span>
+                </div>
               </div>
             </div>
           </div>
+
+          {/* TradeGo Swarm Agent Roster */}
+          <div className="aikart-card space-y-3 bg-gradient-to-br from-[#eff6ff]/60 to-white">
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4 text-blue-600" />
+              <h4 className="text-sm font-bold font-['Red_Hat_Display'] text-[#0f172a]">
+                TradeGo Agent Swarm Roster
+              </h4>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2 text-xs font-['Poppins']">
+              <div className="p-2 rounded-lg bg-white border border-blue-100">
+                <span className="font-bold text-[#0f172a] block">Data Scraper</span>
+                <span className="text-[#475569]">Tick & Order Book</span>
+              </div>
+              <div className="p-2 rounded-lg bg-white border border-blue-100">
+                <span className="font-bold text-[#0f172a] block">Quant Analyst</span>
+                <span className="text-[#475569]">SMA, RSI & MACD</span>
+              </div>
+              <div className="p-2 rounded-lg bg-white border border-blue-100">
+                <span className="font-bold text-[#0f172a] block">News Scraper</span>
+                <span className="text-[#475569]">Earnings & Filings</span>
+              </div>
+              <div className="p-2 rounded-lg bg-white border border-blue-100">
+                <span className="font-bold text-[#0f172a] block">Risk Dispatcher</span>
+                <span className="text-[#475569]">VaR & Stop Loss</span>
+              </div>
+            </div>
+          </div>
+
         </div>
+
       </div>
     </div>
   );
